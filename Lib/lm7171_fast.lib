@@ -1,0 +1,27 @@
+* LM7171_fast : crude 1-pole surrogate + output stage
+* pins:  +IN  -IN  V+  V-  OUT
+.SUBCKT LM7171_FAST  +IN  -IN  VPLUS  VMINUS  OUT
+* params (tweak if needed)
+.param A0=1e5       ; DC open-loop gain
+.param GBW=200e6    ; desired approximate GBW (Hz)
+.param R_OUT=2      ; small output series resistance (ohm)
+* internal nodes
+.node N_INT N_OUT
+
+* open-loop high DC gain source
+EOPEN N_INT 0 VALUE={A0*V(+IN,-IN)}
+
+* single dominant pole implemented as simple RC between N_INT -> N_OUT
+RPOLE N_INT N_OUT 1k
+CPOLE N_OUT 0 {1/(2*PI*GBW*1k)}    ; C = 1/(2π*GBW*R)  -> makes f_p ≈ GBW/A0 but is a crude approx
+
+* output stage: low impedance buffer (R_OUT) to simulate drive
+EOUT OUT_BUF 0 VALUE={V(N_OUT,0)}
+ROUT OUT_BUF OUT {R_OUT}
+
+* clamp output rails a little (soft) to avoid crazy numbers in sims
+DPLUS OUT  VPLUS DMOD ; prevent runaway if used incorrectly
+DMINUS VMINUS OUT DMOD
+
+.MODEL DMOD D (IS=1e-15)
+.ends LM7171_FAST
