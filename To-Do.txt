@@ -1,2 +1,3 @@
 - Add 74HC.lib to all Logic Symbols
 - Select best Logic Symbols an use them
+- Add Symbols for all of the components i have in my Chaoslager
