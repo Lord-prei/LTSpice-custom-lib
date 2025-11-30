@@ -1,0 +1,2 @@
+- Add 74HC.lib to all Logic Symbols
+- Select best Logic Symbols an use them
